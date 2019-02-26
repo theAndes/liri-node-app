@@ -1,15 +1,19 @@
-//"axios": "^0.18.0",
-const axios = require("axios");
-//"moment": "^2.24.0",
-const moment = require("moment");
-//"node-spotify-api": "^1.0.7"
-const Spotify = require("node-spotify-api");
 //TODO: add code to read and set any environment variables with the dotenv package.
 //"dotenv": "^6.2.0",
 require("dotenv").config();
 
+//"axios": "^0.18.0",
+const axios = require("axios");
+
+//"moment": "^2.24.0",
+const moment = require("moment");
+
+//"node-spotify-api": "^1.0.7"
+const Spotify = require("node-spotify-api");
+
 //TODO: import the keys.js file and store it in a variable.
 const keys = require("./keys.js");
+
 //TODO: access your keys.
 var spotify = new Spotify(keys.spotify);
 
@@ -27,20 +31,19 @@ let bitFunc = value => {
             + "/events?app_id=codingbootcamp")
         .then(
             function (res) {
-                // console.log(res.data[1].venue.name);
                 let dataArr = res.data;
-                
-                for (let i = 0; i < dataArr.length; i++) {
-                    console.log(`
-${dataArr[i].venue.name}
-${dataArr[i].venue.city},${dataArr[i].venue.country}
-${moment(dataArr[i].datetime).format("MM/DD/YY")}
-${dataArr[i].lineup}
-                    `)
-
-                }
-            }
-        )};
+                for (let i = 0; i < dataArr.length; i++) console.log(`
+    Lineup: ${dataArr[i].lineup}
+    Venue: ${dataArr[i].venue.name}
+    Location: ${dataArr[i].venue.city},${dataArr[i].venue.country}
+    Date: ${moment(dataArr[i].datetime).format("MM/DD/YY")}
+    `)
+            })
+        .catch(
+            function (error) {
+                console.log(error.response.data.message);
+            });
+};
 
 
 //#######################################################
@@ -50,6 +53,23 @@ ${dataArr[i].lineup}
 // - A preview link of the song from Spotify
 // - The album that the song is from
 // - If no song is provided then your program will default to "The Sign" by Ace of Base.
+let spotifyFunc = value => {
+    spotify
+        .search({ type: 'track', query: 'All the Small Things',limit: 1 })
+        .then(function (value) {
+            console.log(value.tracks.items[0].album);
+            
+            console.log(`
+            ${value.tracks.items[0].artists[0].name}
+            ${value.tracks.items[0].album.name}
+            ${value.tracks.items[0].external_urls.spotify}
+            `
+            );
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+}
 
 
 //#######################################################
@@ -64,7 +84,29 @@ ${dataArr[i].lineup}
 // - Plot of the movie.
 // - Actors in the movie.
 // - If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+let ombdFunc = value => {
+    if (!value) value = 'Mr. Nobody'
+    axios
+        .get("http://www.omdbapi.com/?t="
+            + value +
+            "&apikey=trilogy")
+        .then(
+            function (res) {
+                // console.log(res.data);
+                let dataArr = res.data;
+                console.log(`
+    Title: ${dataArr.Title}
+    Released Date: ${dataArr.Released}
+    Ratings: ${dataArr.Ratings[1].Source}: ${dataArr.Ratings[1].Value}
+    Country of production: ${dataArr.Country}
+    Language: ${dataArr.Language}
+    Actors: ${dataArr.Actors}
+    Plot: ${dataArr.Plot}
+    
+                `)
 
+            })
+}
 
 //#######################################################
 //TODO:node liri.js do-what-it-says
