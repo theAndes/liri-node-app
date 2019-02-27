@@ -20,8 +20,47 @@ const spotify = new Spotify(keys.spotify);
 //Node.js File System Module
 const fs = require('fs');
 
-
-
+//#######################################################
+//User Input
+const command = process.argv[2];
+const value = process.argv.slice(3).join(" ");
+console.log(`
+    ========================
+    Command: ${command}
+    Value: ${value}
+    Process: ${process.argv.slice(2)}
+    ========================
+`);
+//#######################################################
+//TODO: Run user input to switch case to check which command to run
+let cmdChecker = (command, value) => {
+    //TODO: Review command from user input and run function
+    switch (command) {
+        case 'concert-this':
+            bitFunc(value)
+            break;
+        case 'spotify-this-song':
+            spotifyFunc(value)
+            break;
+        case 'movie-this':
+            ombdFunc(value)
+            break;
+        case 'do-what-it-says':
+            fsFunc()
+            break;
+        default:
+            console.log(`
+Sorry, Command: "${command}" is not in our system.
+===================
+Try these commands:
+concert-this
+spotify-this-song
+movie-this
+do-what-it-says
+===================
+        `);
+    }
+}
 //Commands:
 //#######################################################
 //TODO:node liri.js concert-this <artist/band name here>
@@ -51,8 +90,6 @@ let bitFunc = value => {
                 console.log(error.response.data.message);
             });
 };
-
-
 //#######################################################
 // TODO:node liri.js spotify-this-song '<song name here>'
 // - Artist(s)
@@ -61,31 +98,52 @@ let bitFunc = value => {
 // - The album that the song is from
 // - If no song is provided then your program will default to "The Sign" by Ace of Base.
 let spotifyFunc = value => {
-    if (!value) value = "The Sign"
-    console.log("You searched: " + value);
 
-    spotify
-        .search({ type: 'track', query: value, limit:5 })
-        .then(function (res) {
-            let dataArr = res.tracks.items;
-            // console.log(dataArr);
-
-            for (let i = 0; i < dataArr.length; i++)
+    //TODO: If no song is provided then your program will default to "The Sign" by Ace of Base.
+    if (!value) {
+        value = "The Sign"
+        let artist = 'Ace of Base'
+        spotify
+            .search({ type: 'artis', type: 'track', query: value, query: artist, limit: 1 })
+            .then(function (res) {
+                let dataArr = res.tracks.items;
                 console.log(`
-        =========================================================
-        Artist: ${dataArr[i].album.artists[0].name}
-        Album: ${dataArr[i].album.name}
-        Song: ${dataArr[i].name}
-        Play the song: ${dataArr[i].external_urls.spotify}
-        =========================================================
-            `);
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
+    Default Searh: ${value} by ${artist}
+    =========================================================
+    Artist: ${dataArr[0].album.artists[0].name}
+    Album: ${dataArr[0].album.name}
+    Song: ${dataArr[0].name}
+    Play the song: ${dataArr[0].external_urls.spotify}
+    =========================================================
+    `);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+    //TODO: Search user input song
+    else {
+        spotify
+            .search({ type: 'track', query: value, limit: 5 })
+            .then(function (res) {
+                let dataArr = res.tracks.items;
+                // console.log(dataArr);
+
+                for (let i = 0; i < dataArr.length; i++)
+                    console.log(`
+    =========================================================
+    Artist: ${dataArr[i].album.artists[0].name}
+    Album: ${dataArr[i].album.name}
+    Song: ${dataArr[i].name}
+    Play the song: ${dataArr[i].external_urls.spotify}
+    =========================================================
+    `);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
 }
-
-
 //#######################################################
 //TODO: node liri.js movie-this '<movie name here>'
 // - http://www.omdbapi.com/?t='+ value+ '&apikey=trilogy
@@ -109,6 +167,7 @@ let ombdFunc = value => {
                 // console.log(res.data);
                 let dataArr = res.data;
                 console.log(`
+    =========================================================
     Title: ${dataArr.Title}
     Released Date: ${dataArr.Released}
     Ratings: ${dataArr.Ratings[1].Source}: ${dataArr.Ratings[1].Value}
@@ -116,14 +175,13 @@ let ombdFunc = value => {
     Language: ${dataArr.Language}
     Actors: ${dataArr.Actors}
     Plot: ${dataArr.Plot}
-    
+    =========================================================
                 `)
 
             })
 }
-
 //#######################################################
-//TODO:node liri.js do-what-it-says
+//TODO: node liri.js do-what-it-says
 // - Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
 // - It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
 // - Edit the text in random.txt to test out the feature for movie-this and concert-this.
@@ -136,7 +194,7 @@ let fsFunc = () => {
         }
 
         // We will then print the contents of data
-        // console.log(data);
+        console.log("Command from file: " + data);
 
         // Then split it by commas (to make it more readable)
         var dataArr = data.split(",");
@@ -147,46 +205,5 @@ let fsFunc = () => {
         cmdChecker(dataArr[0], dataArr[1])
     })
 }
-
 //#######################################################
-
-const command = process.argv[2];
-const value = process.argv.slice(3).join(" ");
-console.log(`
-    ========================
-    Command: ${command}
-    Value: ${value}
-    Process: ${process.argv.slice(2)}
-    ========================
-`);
-
-
-let cmdChecker = (command, value) => {
-    //TODO: Review command from user input and run function
-    switch (command) {
-        case 'concert-this':
-            bitFunc(value)
-            break;
-        case 'spotify-this-song':
-            spotifyFunc(value)
-            break;
-        case 'movie-this':
-            ombdFunc(value)
-            break;
-        case 'do-what-it-says':
-            fsFunc()
-            break;
-        default:
-            console.log(`
-Sorry, Command: "${command}" is not in our system.
-===================
-Try these commands:
-concert-this
-spotify-this-song
-movie-this
-do-what-it-says
-===================
-        `);
-    }
-}
 cmdChecker(command, value)
