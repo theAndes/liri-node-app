@@ -15,7 +15,12 @@ const Spotify = require("node-spotify-api");
 const keys = require("./keys.js");
 
 //TODO: access your keys.
-var spotify = new Spotify(keys.spotify);
+const spotify = new Spotify(keys.spotify);
+
+//Node.js File System Module
+const fs = require('fs');
+
+
 
 //Commands:
 //#######################################################
@@ -122,7 +127,9 @@ let ombdFunc = value => {
 // - Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
 // - It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
 // - Edit the text in random.txt to test out the feature for movie-this and concert-this.
-
+let ombdFunc = () => {
+    
+}
 
 //#######################################################
 
