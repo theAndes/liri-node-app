@@ -33,10 +33,12 @@ let bitFunc = value => {
             function (res) {
                 let dataArr = res.data;
                 for (let i = 0; i < dataArr.length; i++) console.log(`
+    =========================================================
     Lineup: ${dataArr[i].lineup}
     Venue: ${dataArr[i].venue.name}
-    Location: ${dataArr[i].venue.city},${dataArr[i].venue.country}
+    Location: ${dataArr[i].venue.city},${dataArr[i].venue.region},${dataArr[i].venue.country}
     Date: ${moment(dataArr[i].datetime).format("MM/DD/YY")}
+    =========================================================
     `)
             })
         .catch(
@@ -54,17 +56,24 @@ let bitFunc = value => {
 // - The album that the song is from
 // - If no song is provided then your program will default to "The Sign" by Ace of Base.
 let spotifyFunc = value => {
+    if (!value) value = "The Sign"
+    console.log("You searched: " + value);
+
     spotify
-        .search({ type: 'track', query: 'All the Small Things',limit: 1 })
-        .then(function (value) {
-            console.log(value.tracks.items[0].album);
-            
-            console.log(`
-            ${value.tracks.items[0].artists[0].name}
-            ${value.tracks.items[0].album.name}
-            ${value.tracks.items[0].external_urls.spotify}
-            `
-            );
+        .search({ type: 'track', query: value })
+        .then(function (res) {
+            let dataArr = res.tracks.items;
+            console.log(dataArr);
+
+            for (let i = 0; i < dataArr.length; i++)
+                console.log(`
+        =========================================================
+        Artist: ${dataArr[i].album.artists[0].name}
+        Album: ${dataArr[i].album.name}
+        Song: ${dataArr[i].name}
+        Play the song: ${dataArr[i].external_urls.spotify}
+        =========================================================
+            `);
         })
         .catch(function (err) {
             console.log(err);
@@ -118,13 +127,13 @@ let ombdFunc = value => {
 //#######################################################
 
 const command = process.argv[2];
-const value = process.argv.slice(3).join("");
+const value = process.argv.slice(3).join(" ");
 console.log(`
-========================
-Command: ${command}
-Value: ${value}
-Process: ${process.argv.slice(2)}
-========================
+    ========================
+    Command: ${command}
+    Value: ${value}
+    Process: ${process.argv.slice(2)}
+    ========================
 `);
 
 
