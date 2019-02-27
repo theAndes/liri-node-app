@@ -65,10 +65,10 @@ let spotifyFunc = value => {
     console.log("You searched: " + value);
 
     spotify
-        .search({ type: 'track', query: value })
+        .search({ type: 'track', query: value, limit:5 })
         .then(function (res) {
             let dataArr = res.tracks.items;
-            console.log(dataArr);
+            // console.log(dataArr);
 
             for (let i = 0; i < dataArr.length; i++)
                 console.log(`
@@ -127,8 +127,25 @@ let ombdFunc = value => {
 // - Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
 // - It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
 // - Edit the text in random.txt to test out the feature for movie-this and concert-this.
-let ombdFunc = () => {
-    
+let fsFunc = () => {
+    fs.readFile("random.txt", "utf8", function (error, data) {
+
+        // If the code experiences any errors it will log the error to the console.
+        if (error) {
+            return console.log(error);
+        }
+
+        // We will then print the contents of data
+        // console.log(data);
+
+        // Then split it by commas (to make it more readable)
+        var dataArr = data.split(",");
+
+        // We will then re-display the content as an array for later use.
+        // console.log(dataArr);
+        //run through function
+        cmdChecker(dataArr[0], dataArr[1])
+    })
 }
 
 //#######################################################
@@ -144,23 +161,23 @@ console.log(`
 `);
 
 
-
-//TODO: Review command from user input and run function
-switch (command) {
-    case 'concert-this':
-        bitFunc(value)
-        break;
-    case 'spotify-this-song':
-        spotifyFunc(value)
-        break;
-    case 'movie-this':
-        ombdFunc(value)
-        break;
-    case 'do-what-it-says':
-        fsFunc()
-        break;
-    default:
-        console.log(`
+let cmdChecker = (command, value) => {
+    //TODO: Review command from user input and run function
+    switch (command) {
+        case 'concert-this':
+            bitFunc(value)
+            break;
+        case 'spotify-this-song':
+            spotifyFunc(value)
+            break;
+        case 'movie-this':
+            ombdFunc(value)
+            break;
+        case 'do-what-it-says':
+            fsFunc()
+            break;
+        default:
+            console.log(`
 Sorry, Command: "${command}" is not in our system.
 ===================
 Try these commands:
@@ -170,4 +187,6 @@ movie-this
 do-what-it-says
 ===================
         `);
+    }
 }
+cmdChecker(command, value)
