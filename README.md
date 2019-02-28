@@ -30,4 +30,4 @@
 # TODO: node liri.js do-what-it-says
 - Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
 - It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
-![read-from-file-fs](/images/read from file.JPG)
+  ![read-from-file-fs](/images/read from file.JPG)
