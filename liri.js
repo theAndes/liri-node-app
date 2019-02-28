@@ -34,6 +34,8 @@ console.log(`
 //#######################################################
 //TODO: Run user input to switch case to check which command to run
 let cmdChecker = (command, value) => {
+    //TODO: Write to log each sucessful and unsucessful request
+    appendToFile(command, value)
     //TODO: Review command from user input and run function
     switch (command) {
         case 'concert-this':
@@ -100,37 +102,17 @@ let bitFunc = value => {
 let spotifyFunc = value => {
 
     //TODO: If no song is provided then your program will default to "The Sign" by Ace of Base.
-    if (!value) {
-        value = "The Sign"
-        let artist = 'Ace of Base'
-        spotify
-            .search({ type: 'artis', type: 'track', query: value, query: artist, limit: 1 })
-            .then(function (res) {
-                let dataArr = res.tracks.items;
-                console.log(`
-    Default Searh: ${value} by ${artist}
-    =========================================================
-    Artist: ${dataArr[0].album.artists[0].name}
-    Album: ${dataArr[0].album.name}
-    Song: ${dataArr[0].name}
-    Play the song: ${dataArr[0].external_urls.spotify}
-    =========================================================
-    `);
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-    }
-    //TODO: Search user input song
-    else {
-        spotify
-            .search({ type: 'track', query: value, limit: 5 })
-            .then(function (res) {
-                let dataArr = res.tracks.items;
-                // console.log(dataArr);
+    if (!value) value = "The Sign, Ace of Base"
 
-                for (let i = 0; i < dataArr.length; i++)
-                    console.log(`
+    //TODO: Search user input song
+    spotify
+        .search({ type: 'track', query: value, limit: 5 })
+        .then(function (res) {
+            let dataArr = res.tracks.items;
+            // console.log(dataArr);
+
+            for (let i = 0; i < dataArr.length; i++)
+                console.log(`
     =========================================================
     Artist: ${dataArr[i].album.artists[0].name}
     Album: ${dataArr[i].album.name}
@@ -138,11 +120,10 @@ let spotifyFunc = value => {
     Play the song: ${dataArr[i].external_urls.spotify}
     =========================================================
     `);
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-    }
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
 }
 //#######################################################
 //TODO: node liri.js movie-this '<movie name here>'
@@ -176,9 +157,21 @@ let ombdFunc = value => {
     Actors: ${dataArr.Actors}
     Plot: ${dataArr.Plot}
     =========================================================
-                `)
+    `)
 
             })
+        .catch(function (err) {
+            console.log(`
+=========================================================
+WOW that was wierd.
+We cannot find that movie. 
+Try again. Maybe there was a typo, it happens :)
+
+Let's say you are looking for "The Lego Movie 2", but you ask for "Lego2".
+We computers might not figure that's what you meant.
+=========================================================
+            `);
+        });
 }
 //#######################################################
 //TODO: node liri.js do-what-it-says
@@ -205,5 +198,13 @@ let fsFunc = () => {
         cmdChecker(dataArr[0], dataArr[1])
     })
 }
+//#######################################################
+//TODO: append to log.txt all requests
+let appendToFile = (command, value) =>
+    fs.appendFile('log.txt', command.toUpperCase() + ',' + value.toUpperCase() + '\n', (err) => {
+        if (err) throw err;
+        console.log(command + ' ' + value + ' was appended to file!');
+    });
+
 //#######################################################
 cmdChecker(command, value)
