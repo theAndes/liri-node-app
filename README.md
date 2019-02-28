@@ -1,4 +1,4 @@
 # liri-node-app
 
-![GitHub Logo](/images/concert-this.JPG| width=100)
+![Concert-this](/images/concert-this.JPG)
 Format: ![Alt Text](url)
